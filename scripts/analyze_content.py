@@ -55,7 +55,7 @@ def main() -> int:
         if isinstance(raw_summary, dict):
             ingestion_summary = {
                 key: raw_summary.get(key)
-                for key in ("status", "discovered", "scheduled", "exception", "rejected", "errorCode")
+                for key in ("status", "discovered", "scheduled", "exception", "rejected", "rejectionReasons", "errorCode")
             }
 
     endpoint = f"{origin}/api/automation/content-analysis"
