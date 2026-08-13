@@ -25,7 +25,7 @@ SCHEMA_VERSION = "liuli-analysis-report-v1"
 ANALYZER_VERSION = "liuli-pixel-analysis-v1"
 MAX_IMAGE_BYTES = 15 * 1024 * 1024
 MAX_IMAGE_PIXELS = 80_000_000
-ALLOWED_IMAGE_HOSTS = {"www.artic.edu"}
+ALLOWED_IMAGE_HOSTS = {"www.artic.edu", "openaccess-cdn.clevelandart.org"}
 HEX_64 = re.compile(r"^[a-f0-9]{64}$")
 
 Image.MAX_IMAGE_PIXELS = MAX_IMAGE_PIXELS
@@ -169,7 +169,7 @@ def fetch_candidates(endpoint: str, token: str, sites_bypass_token: str) -> list
             "sourceName", "sourceItemId", "imageUrl", "sourceUrl", "assetSha256"
         }:
             raise RuntimeError("candidate_shape_invalid")
-        if value["sourceName"] != "art-institute-chicago" or not HEX_64.fullmatch(value["assetSha256"]):
+        if value["sourceName"] not in {"art-institute-chicago", "cleveland-museum-art"} or not HEX_64.fullmatch(value["assetSha256"]):
             raise RuntimeError("candidate_identity_invalid")
         require_allowed_image_url(value["imageUrl"])
         require_https_url(value["sourceUrl"])
