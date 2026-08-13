@@ -3,6 +3,10 @@ name: Liuli content analysis
 on:
   schedule:
     - cron: "40 3 * * *"
+  push:
+    branches: [main]
+    paths:
+      - ".liuli/trigger-*"
   workflow_dispatch:
     inputs:
       page:
@@ -41,7 +45,7 @@ jobs:
           LIULI_AUTOMATION_ORIGIN: ${{ secrets.LIULI_AUTOMATION_ORIGIN }}
           LIULI_AUTOMATION_ORIGIN_FALLBACK: https://liuli-wallpaper-gallery.mimonono.chatgpt.site
           LIULI_SITES_BYPASS_TOKEN: ${{ secrets.LIULI_SITES_BYPASS_TOKEN }}
-          LIULI_INGESTION_PAGE: ${{ inputs.page }}
+          LIULI_INGESTION_PAGE: ${{ inputs.page || github.run_number }}
           LIULI_ANALYSIS_RUN_ID: github-${{ github.run_id }}-${{ github.run_attempt }}
           LIULI_ANALYSIS_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
