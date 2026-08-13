@@ -48,13 +48,24 @@ def main() -> int:
         raise SystemExit("LIULI_AUTOMATION_TOKEN must be at least 32 characters")
     sites_bypass_token = require_sites_bypass_token(origin, args.sites_bypass_token)
 
+    ingestion_summary: dict[str, Any] | None = None
     if args.trigger_ingestion:
-        trigger_ingestion(origin, token, sites_bypass_token, args.ingestion_page)
+        ingestion_response = trigger_ingestion(origin, token, sites_bypass_token, args.ingestion_page)
+        raw_summary = ingestion_response.get("result", {})
+        if isinstance(raw_summary, dict):
+            ingestion_summary = {
+                key: raw_summary.get(key)
+                for key in ("status", "discovered", "scheduled", "exception", "rejected", "errorCode")
+            }
 
     endpoint = f"{origin}/api/automation/content-analysis"
     candidates = fetch_candidates(endpoint, token, sites_bypass_token)
     if not candidates:
-        print(json.dumps({"candidates": 0, "submitted": 0}, ensure_ascii=False))
+        print(json.dumps({
+            "ingestion": ingestion_summary,
+            "candidates": 0,
+            "submitted": 0,
+        }, ensure_ascii=False))
         return 0
 
     clam_version = read_clamav_version()
