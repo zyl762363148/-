@@ -32,6 +32,7 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
+          cache-dependency-path: scripts/analysis-requirements.txt
       - name: Install image and malware analyzers
         run: |
           python -m pip install -r scripts/analysis-requirements.txt
